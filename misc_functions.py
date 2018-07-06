@@ -12,8 +12,6 @@ def create_cache_folder():
     if os.path.isdir(path)==False:
         os.makedirs(path)
         print('VCache --- Cache Folder Created')
-    else:
-        print('VCache --- Cache Folder Found')
         
 #get absolute path
 def absolute_path(path):
