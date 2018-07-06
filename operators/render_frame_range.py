@@ -98,7 +98,7 @@ class VCacheOpenGLRange(bpy.types.Operator):
             fname=pattern + "##########"
             scn.render.filepath = os.path.join(cachefolder, fname)
             
-            suppress_files_pattern(cachefolder, fname)
+            suppress_files_pattern(cachefolder, pattern)
             
             scn.render.image_settings.file_format = format
             scn.render.image_settings.color_mode = 'RGB'
