@@ -6,18 +6,18 @@ VCache is an addon for blender to quickly playblast your viewport without any co
 
 Its features :
 
-    quick cache with selected format
-    automatically play generated cache
-    purge cache operators
-    draft mode
-    Only Render Mode
-    Camera Override Mode
-    Detecting and Filling missing frames in sequence (through ffmpeg)
-    Ability to use external player which support image sequence (like DJView…)
+- quick cache with selected format
+- automatically play generated cache
+- purge cache operators
+- draft mode
+- Only Render Mode
+- Camera Override Mode
+- Detecting and Filling missing frames in sequence (through ffmpeg)
+- Ability to use external player which support image sequence (like DJView…)
 
 The entire addon UI is a simple Pie Menu, and a few shortcuts, here they are :
 
-    Alt + Y : Cache current viewport (and play after caching if this option is set in user prefs)
-    Ctrl + Alt + Y : Pie Menu
-    Ctrl + Y : Play the corresponding cache (cache are stored per project)
-    Shift + Y : Call Scene Settings Menu (draft, camera, only render)
+- Alt + Y : Cache current viewport (and play after caching if this option is set in user prefs)
+- Ctrl + Alt + Y : Pie Menu
+- Ctrl + Y : Play the corresponding cache (cache are stored per project)
+- Shift + Y : Call Scene Settings Menu (draft, camera, only render)
