@@ -22,10 +22,10 @@ bl_info = {
     "name": "VCache",
     "description": "Cache Viewport",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 1, 0),
+    "version": (1, 0, 0),
     "blender": (2, 79, 0),
     "location": "3d View > Down Header",
-    "warning": "This addon is still in development.",
+    #"warning": "This addon is still in development.",
     "wiki_url": "https://github.com/samytichadou/vcache/wiki",
     "tracker_url": "https://github.com/samytichadou/vcache/issues/new",
     "category": "Animation" }
