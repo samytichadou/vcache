@@ -94,11 +94,11 @@ class VCacheOpenGLRange(bpy.types.Operator):
             else:
                 blendname='untitled'
             scenename=scn.name
-            
-            fname=blendname + "___" + scenename + "___cache_##########"
+            pattern=blendname + "___" + scenename + "___cache_"
+            fname=pattern + "##########"
             scn.render.filepath = os.path.join(cachefolder, fname)
             
-            suppress_files_pattern(cachefolder, fname)
+            suppress_files_pattern(cachefolder, pattern)
             
             scn.render.image_settings.file_format = format
             scn.render.image_settings.color_mode = 'RGB'

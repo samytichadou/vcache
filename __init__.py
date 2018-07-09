@@ -22,7 +22,7 @@ bl_info = {
     "name": "VCache",
     "description": "Cache Viewport",
     "author": "Samy Tichadou (tonton)",
-    "version": (0, 2, 0),
+    "version": (0, 1, 0),
     "blender": (2, 79, 0),
     "location": "3d View > Down Header",
     "warning": "This addon is still in development.",
@@ -44,7 +44,7 @@ modules = developer_utils.setup_addon_modules(__path__, __name__, "bpy" in local
 
 from .operators.render_frame_range import VCacheOpenGLRange
 from .operators.read_operator import VCachePlaybackRangeCache
-from .gui import VCachePieMenuCaller
+from .gui import VCachePieMenuCaller, VCacheCacheSettingsMenu
 
 # store keymaps here to access after registration
 addon_keymaps = []
@@ -81,12 +81,17 @@ def register():
     bpy.types.Scene.vcache_camera = bpy.props.StringProperty()
     
     ### keymap ###
-    
+
+    # handle the keymap
     wm = bpy.context.window_manager
-    km = wm.keyconfigs.addon.keymaps.new(name='Window', space_type='VIEW_3D')
+    km = wm.keyconfigs.addon.keymaps.new(
+        name='3D View',
+        space_type='VIEW_3D',
+        region_type='WINDOW')
     km2 = km.keymap_items.new(VCachePieMenuCaller.bl_idname, 'Y', 'PRESS', ctrl=True, alt=True)
     km3 = km.keymap_items.new(VCacheOpenGLRange.bl_idname, 'Y', 'PRESS', alt=True)
     km4 = km.keymap_items.new(VCachePlaybackRangeCache.bl_idname, 'Y', 'PRESS', ctrl=True)
+    km5 = km.keymap_items.new(VCacheCacheSettingsMenu.bl_idname, 'Y', 'PRESS', shift=True)
     addon_keymaps.append(km)
 
 def unregister():
@@ -103,5 +108,11 @@ def unregister():
     del bpy.types.Scene.vcache_camera
     
     ### keymap ###
-    
+
+    # PIE MENU keymap
+    wm = bpy.context.window_manager
+    for km in addon_keymaps:
+        wm.keyconfigs.addon.keymaps.remove(km)
+
+    # clear the list
     del addon_keymaps[:]
