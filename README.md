@@ -21,3 +21,7 @@ The entire addon UI is a simple Pie Menu, and a few shortcuts, here they are :
 - Ctrl + Alt + Y : Pie Menu
 - Ctrl + Y : Play the corresponding cache (cache are stored per project)
 - Shift + Y : Call Scene Settings Menu (draft, camera, only render)
+
+
+Here's a quick how to video :
+https://www.youtube.com/watch?v=ul6rT6f-C1Q&feature=youtu.be
