@@ -20,10 +20,10 @@ class VCacheAddonPrefs(bpy.types.AddonPreferences):
             subtype="FILE_PATH"
             )
     
-    external_player_executable = bpy.props.StringProperty(
-            name="Path to External Player executable",
+    external_video_player_executable = bpy.props.StringProperty(
+            name="Path to External Video Player executable",
             default='',
-            description="Points to external executable file of Player for playback functions",
+            description="Points to external executable file of Player for video playback functions",
             subtype="FILE_PATH"
             )
     
@@ -87,12 +87,6 @@ class VCacheAddonPrefs(bpy.types.AddonPreferences):
             min=1,
             max=10
             )
-            
-    cache_real_viewport_size = bpy.props.BoolProperty(
-            name="Cache Viewport real size",
-            description="Cached Images will have the viewport size without taking toolshelf and properties panels size into account",
-            default=False
-            )
     
     vcache_play_after_caching = bpy.props.BoolProperty(
             name="Play after Caching",
@@ -154,7 +148,6 @@ class VCacheAddonPrefs(bpy.types.AddonPreferences):
         row.label('Cache Format Settings', icon='IMAGE_DATA')
         if self.pref_format==True:
             row=box.row()
-            row.prop(self, "cache_real_viewport_size", text='Real Viewport Size')
             row.prop(self, 'cache_dimension_coef', text='Resolution Multiplier')
             row=box.row()
             row.prop(self, "cache_format", expand=False, text="Cache Format")

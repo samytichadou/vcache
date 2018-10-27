@@ -122,7 +122,7 @@ class VCacheOpenGLRange(bpy.types.Operator):
                     scn.render.alpha_mode = 'TRANSPARENT'
             if draft==True:
                 scn.render.use_antialiasing = False
-                scn.render.resolution_percentage=50
+                scn.render.resolution_percentage=25
             else:
                 scn.render.use_antialiasing = True
                 scn.render.antialiasing_samples = '16'

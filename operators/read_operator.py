@@ -23,7 +23,6 @@ class VCachePlaybackRangeCache(bpy.types.Operator):
         
         addon_preferences = get_addon_preferences()
         ffmpegPath=absolute_path(addon_preferences.ffmpeg_executable)
-        externalplayer=addon_preferences.external_player_executable
         cache_format = addon_preferences.cache_format
         cache=addon_preferences.prefs_folderpath
         cachefolder = absolute_path(cache)
@@ -58,7 +57,7 @@ class VCachePlaybackRangeCache(bpy.types.Operator):
         for f in os.listdir(cachefolder):
             if match in f and ext in f:
                 chk=1
-                framenumber=int(os.path.splitext((f.split(match)[1]).lstrip("0"))[0])
+                framenumber=int(os.path.splitext(f.split(match)[1])[0])
                 filelist.append(framenumber)
                 
         if chk==1:
@@ -80,20 +79,14 @@ class VCachePlaybackRangeCache(bpy.types.Operator):
             else:
                 self.report({'INFO'}, "Frame Range Playback launched")
                 
-            #check player and play            
-            if externalplayer=='':
-                match2=match+"##########"
-                scn.render.filepath = os.path.join(cachefolder, match2)
-                scn.render.image_settings.file_format=cache_format
-                bpy.ops.render.play_rendered_anim()
-                scn.render.filepath = opath
-                scn.render.image_settings.file_format=oformat
-            else:
-                filename=match+str(nfilelist[0]).zfill(10)+ext
-                file=os.path.join(cachefolder, filename)
-                print(file)
-                p = subprocess.Popen([absolute_path(externalplayer), file])
-        
+            #play            
+            match2=match+"##########"
+            scn.render.filepath = os.path.join(cachefolder, match2)
+            scn.render.image_settings.file_format=cache_format
+            bpy.ops.render.play_rendered_anim()
+            scn.render.filepath = opath
+            scn.render.image_settings.file_format=oformat
+                
         else:
             self.report({'WARNING'}, "No corresponding cache files")
         

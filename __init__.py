@@ -22,7 +22,7 @@ bl_info = {
     "name": "VCache",
     "description": "Cache Viewport",
     "author": "Samy Tichadou (tonton)",
-    "version": (1, 0, 0),
+    "version": (2, 0, 0),
     "blender": (2, 79, 0),
     "location": "3d View > Down Header",
     #"warning": "This addon is still in development.",
