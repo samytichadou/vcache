@@ -33,6 +33,7 @@ class VCacheOpenGLRange(bpy.types.Operator):
         only_render = scn.vcache_only_render
         cam = scn.vcache_camera
         
+        #memorize render settings
         opath=scn.render.filepath
         oframe=scn.frame_current
         oformat=scn.render.image_settings.file_format
@@ -50,8 +51,7 @@ class VCacheOpenGLRange(bpy.types.Operator):
         osamples=scn.render.antialiasing_samples
         ocam=context.scene.camera
         oonlyrender=bpy.context.space_data.show_only_render
-        start=scn.frame_start
-        end=scn.frame_end
+        oframe=scn.frame_current
         
         create_cache_folder()
         
@@ -100,10 +100,17 @@ class VCacheOpenGLRange(bpy.types.Operator):
             
             suppress_files_pattern(cachefolder, pattern)
             
+            #set render settings
             scn.render.image_settings.file_format = format
             scn.render.image_settings.color_mode = 'RGB'
             scn.render.resolution_x=nxsize
             scn.render.resolution_y=nysize
+            if scn.use_preview_range == True:
+                ostart=scn.frame_start
+                oend=scn.frame_end
+                scn.frame_start=scn.frame_preview_start
+                scn.frame_end=scn.frame_preview_end
+
 
             if format=='JPEG':
                 scn.render.image_settings.quality = quality
@@ -165,5 +172,9 @@ class VCacheOpenGLRange(bpy.types.Operator):
             scn.render.antialiasing_samples=osamples
             bpy.context.space_data.show_only_render=oonlyrender
             bpy.context.scene.camera=ocam
+            scn.frame_current=oframe
+            if scn.use_preview_range == True:
+                scn.frame_start=ostart
+                scn.frame_end=oend
 
         return {'FINISHED'}
