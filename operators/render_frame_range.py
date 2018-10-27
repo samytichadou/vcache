@@ -146,11 +146,21 @@ class VCacheOpenGLRange(bpy.types.Operator):
                         scn.render.resolution_percentage = opct
                         
                         bpy.context.scene.camera=n
-                        bpy.ops.render.opengl(animation=True, write_still=True, view_context=False)
+                        #check for background rendering
+                        if addon_preferences.background_cache==False:
+                            bpy.ops.render.opengl(animation=True, write_still=True, view_context=False)
+                        else:
+                            #bg rendering functions
+                            print("background render")
                 if chk==0:
                     self.report({'WARNING'}, cam+" missing - Clear it to Cache")
             else:
-                bpy.ops.render.opengl(animation=True, write_still=True, view_context=True)
+                #check for background rendering
+                if addon_preferences.background_cache==False:
+                    bpy.ops.render.opengl(animation=True, write_still=True, view_context=True)
+                else:
+                    #bg rendering functions
+                    print("background render")
             
             if addon_preferences.vcache_play_after_caching==True:
                 bpy.ops.vcache.playback_rangecache()
