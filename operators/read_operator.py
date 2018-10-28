@@ -80,7 +80,7 @@ class VCachePlaybackRangeCache(bpy.types.Operator):
                 self.report({'INFO'}, "Frame Range Playback launched")
                 
             #play            
-            match2=match+"##########"
+            match2=match+"####"
             scn.render.filepath = os.path.join(cachefolder, match2)
             scn.render.image_settings.file_format=cache_format
             bpy.ops.render.play_rendered_anim()

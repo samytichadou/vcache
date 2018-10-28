@@ -3,7 +3,7 @@ import os
 
 from ..preferences import get_addon_preferences
 from ..misc_functions import absolute_path, create_cache_folder, suppress_files_pattern
-from .render_functions import *
+from .render_functions import find_area, save_temp_file, memorize_render_settings, get_area_size, define_pattern_render_name, set_cache_render_settings, set_old_render_settings
 
 #open gl render frame range
 class VCacheOpenGLRange(bpy.types.Operator):
@@ -47,6 +47,8 @@ class VCacheOpenGLRange(bpy.types.Operator):
                 create_cache_folder()
                 
                 #define size of the area
+#                resolution_x = good_area.width
+#                resolution_y = good_area.height
                 resolution_x,resolution_y=get_area_size(good_area)
                 
                 #define render name

@@ -128,7 +128,7 @@ def define_pattern_render_name():
         blendname='untitled'
     scenename=bpy.context.scene.name
     pattern=blendname + "___" + scenename + "___cache_"
-    render_name=pattern + "##########"
+    render_name=pattern + "####"
     
     return {pattern, render_name}
 
