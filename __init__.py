@@ -80,6 +80,10 @@ def register():
             )
     bpy.types.Scene.vcache_camera = bpy.props.StringProperty()
     
+    bpy.types.Scene.vcache_background = bpy.props.BoolProperty(name='Background Render')
+    
+    bpy.types.Scene.vcache_is_background_file = bpy.props.BoolProperty(default=False)
+    
     ### keymap ###
 
     # handle the keymap
@@ -106,6 +110,8 @@ def unregister():
     del bpy.types.Scene.vcache_only_render
     del bpy.types.Scene.vcache_real_size
     del bpy.types.Scene.vcache_camera
+    del bpy.types.Scene.vcache_background
+    del bpy.types.Scene.vcache_is_background_file
     
     ### keymap ###
 

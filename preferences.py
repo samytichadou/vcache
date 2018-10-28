@@ -101,11 +101,6 @@ class VCacheAddonPrefs(bpy.types.AddonPreferences):
                  default = 'mp4',
                  name = 'VR Video Format'
                  )        
-                 
-    background_cache = bpy.props.BoolProperty(
-            name="Background Playblast",
-            default=False
-            )
     
     #UI props
     pref_general = bpy.props.BoolProperty(
@@ -136,7 +131,6 @@ class VCacheAddonPrefs(bpy.types.AddonPreferences):
         if self.pref_general==True:
             row=box.row()
             row.prop(self, 'vcache_play_after_caching')
-            row.prop(self, 'background_cache')
             row=box.row()
             row.prop(self, 'prefs_folderpath', text='External Cache Folder Path')
             row=box.row()

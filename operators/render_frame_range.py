@@ -3,6 +3,7 @@ import os
 
 from ..preferences import get_addon_preferences
 from ..misc_functions import absolute_path, create_cache_folder, suppress_files_pattern
+from .render_functions import *
 
 #open gl render frame range
 class VCacheOpenGLRange(bpy.types.Operator):
@@ -17,174 +18,62 @@ class VCacheOpenGLRange(bpy.types.Operator):
     
     def execute(self, context):
         addon_preferences = get_addon_preferences()
-        scn=bpy.context.scene
+        scn=context.scene
         
-        cache=addon_preferences.prefs_folderpath
-        cachefolder = absolute_path(cache)
-        format = addon_preferences.cache_format
-        depth = addon_preferences.cache_format_depth
-        quality = addon_preferences.cache_format_quality
-        compression = addon_preferences.cache_format_compression
-        tiffcompression = addon_preferences.cache_tiff_compression
-        channel= addon_preferences.cache_format_channel
-        mult = addon_preferences.cache_dimension_coef
-        realsize = scn.vcache_real_size
-        draft = scn.vcache_draft
-        only_render = scn.vcache_only_render
-        cam = scn.vcache_camera
-        
-        #memorize render settings
-        opath=scn.render.filepath
-        oframe=scn.frame_current
-        oformat=scn.render.image_settings.file_format
-        odepth=scn.render.image_settings.color_depth
-        oquality=scn.render.image_settings.quality
-        ocompression=scn.render.image_settings.compression
-        otiffcompression=scn.render.image_settings.tiff_codec
-        ocolor=scn.render.image_settings.color_mode
-        oxsize=scn.render.resolution_x
-        oysize=scn.render.resolution_y
-        opct=scn.render.resolution_percentage
-        ochannel=scn.render.image_settings.color_mode
-        oalpha=scn.render.alpha_mode
-        oaa=scn.render.use_antialiasing
-        osamples=scn.render.antialiasing_samples
-        ocam=context.scene.camera
-        oonlyrender=bpy.context.space_data.show_only_render
-        oframe=scn.frame_current
-        
-        create_cache_folder()
-        
-        #find 3d view area
-        garea=''
-        if bpy.context.area.type=="VIEW_3D":
-            garea=bpy.context.area
-        else:
-            for area in bpy.context.window.screen.areas:
-                if area.type=="VIEW_3D":
-                    garea=area
-        
-        if garea!='':
-            #define size of the render
-            for i in garea.regions:
-                if i.type=='HEADER':
-                    if i.height!=1:
-                        h1=i.height
-                    else:
-                        h1=0
-                elif i.type=='TOOLS' and realsize==False:
-                    if i.width!=1:
-                        w1=i.width
-                    else:
-                        w1=0
-                elif i.type=='UI' and realsize==False:
-                    if i.width!=1:
-                        w2=i.width
-                    else:
-                        w2=0
-            if realsize==False:
-                nxsize=garea.width-(w1+w2)
-                nysize=garea.height-h1
-            else:
-                nxsize=garea.width
-                nysize=garea.height-h1
+        #check if 3d area
+        good_area=find_area()
+        if good_area!='':
+                                
+            #background render
+            if scn.vcache_background==True:
+                
+                #save file
+                bpy.ops.wm.save_mainfile()
+                
+                #save file as and reopen original
+                temp=save_temp_file(addon_preferences)
+                
+                #launch command line
+                
+                            
+            #no background render pre action
+            else:                
+                #memorize render settings
+                old_settings=memorize_render_settings()
             
-            if bpy.data.is_saved:
-                blendname=(os.path.splitext(os.path.basename(bpy.data.filepath))[0])
-            else:
-                blendname='untitled'
-            scenename=scn.name
-            pattern=blendname + "___" + scenename + "___cache_"
-            fname=pattern + "##########"
-            scn.render.filepath = os.path.join(cachefolder, fname)
-            
-            suppress_files_pattern(cachefolder, pattern)
-            
-            #set render settings
-            scn.render.image_settings.file_format = format
-            scn.render.image_settings.color_mode = 'RGB'
-            scn.render.resolution_x=nxsize
-            scn.render.resolution_y=nysize
-            if scn.use_preview_range == True:
-                ostart=scn.frame_start
-                oend=scn.frame_end
-                scn.frame_start=scn.frame_preview_start
-                scn.frame_end=scn.frame_preview_end
-
-
-            if format=='JPEG':
-                scn.render.image_settings.quality = quality
-            elif format=='PNG':
-                scn.render.image_settings.color_depth = depth
-                scn.render.image_settings.compression = compression
-                scn.render.image_settings.color_mode = channel
-                if channel=='RGBA':
-                    scn.render.alpha_mode = 'TRANSPARENT'
-            elif format=='TIFF':
-                scn.render.image_settings.color_depth = depth
-                scn.render.image_settings.compression = compression
-                scn.render.image_settings.tiff_codec = tiffcompression
-                scn.render.image_settings.color_mode = channel
-                if channel=='RGBA':
-                    scn.render.alpha_mode = 'TRANSPARENT'
-            if draft==True:
-                scn.render.use_antialiasing = False
-                scn.render.resolution_percentage=25
-            else:
-                scn.render.use_antialiasing = True
-                scn.render.antialiasing_samples = '16'
-                scn.render.resolution_percentage=100*mult
-            if only_render==True:
-                bpy.context.space_data.show_only_render=True
-            if cam!='':
-                chk=0
-                for n in bpy.context.scene.objects:
-                    if n.name==cam:
-                        chk=1
-                        scn.render.resolution_x = oxsize
-                        scn.render.resolution_y = oysize
-                        scn.render.resolution_percentage = opct
-                        
-                        bpy.context.scene.camera=n
-                        #check for background rendering
-                        if addon_preferences.background_cache==False:
-                            bpy.ops.render.opengl(animation=True, write_still=True, view_context=False)
-                        else:
-                            #bg rendering functions
-                            print("background render")
-                if chk==0:
-                    self.report({'WARNING'}, cam+" missing - Clear it to Cache")
-            else:
-                #check for background rendering
-                if addon_preferences.background_cache==False:
-                    bpy.ops.render.opengl(animation=True, write_still=True, view_context=True)
+            #shared actions
+            if scn.vcache_background==False or scn.vcache_is_background_file==True:
+                #create cache folder if needed
+                create_cache_folder()
+                
+                #define size of the area
+                resolution_x,resolution_y=get_area_size(good_area)
+                
+                #define render name
+                cache=addon_preferences.prefs_folderpath
+                cachefolder = absolute_path(cache)
+                pattern, render_name= define_pattern_render_name()
+                                
+                #delete previous renders
+                suppress_files_pattern(cachefolder, pattern)
+                
+                #set render settings
+                    #if cam = 1, render without context
+                cam=set_cache_render_settings(addon_preferences, cachefolder, render_name, resolution_x, resolution_y, old_settings)
+                
+                #launch render with or without context
+                if cam==1:
+                    bpy.ops.render.opengl(animation=True, write_still=True, view_context=False)
                 else:
-                    #bg rendering functions
-                    print("background render")
-            
-            if addon_preferences.vcache_play_after_caching==True:
-                bpy.ops.vcache.playback_rangecache()
-            
-            #reset the renders settings
-            scn.render.filepath = opath
-            scn.render.image_settings.file_format = oformat
-            scn.render.image_settings.color_depth = odepth
-            scn.render.image_settings.quality = oquality
-            scn.render.image_settings.compression = ocompression
-            scn.render.image_settings.tiff_codec = otiffcompression
-            scn.render.image_settings.color_mode = ocolor
-            scn.render.resolution_x = oxsize
-            scn.render.resolution_y = oysize
-            scn.render.resolution_percentage = opct
-            scn.render.image_settings.color_mode = ochannel
-            scn.render.alpha_mode = oalpha
-            scn.render.use_antialiasing=oaa
-            scn.render.antialiasing_samples=osamples
-            bpy.context.space_data.show_only_render=oonlyrender
-            bpy.context.scene.camera=ocam
-            scn.frame_current=oframe
-            if scn.use_preview_range == True:
-                scn.frame_start=ostart
-                scn.frame_end=oend
-
+                    bpy.ops.render.opengl(animation=True, write_still=True, view_context=True)
+                
+                #launch playback
+                if addon_preferences.vcache_play_after_caching==True:
+                    bpy.ops.vcache.playback_rangecache()
+                                
+            #no background render post action
+            if scn.vcache_background==False:
+                #reset render settings
+                set_old_render_settings(old_settings)
+                #print()               
         return {'FINISHED'}
